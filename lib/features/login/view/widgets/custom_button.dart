@@ -3,15 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomButton extends StatelessWidget {
-  const CustomButton({
-    super.key,
-    required this.text,
-    required this.onTap,
-    required this.height,
-  });
+  const CustomButton(
+      {super.key,
+      required this.text,
+      required this.onTap,
+      required this.height,
+      this.borderRaduis = 9,
+      this.isTest = false});
   final String? text;
   final VoidCallback? onTap;
   final double? height;
+  final double borderRaduis;
+  final bool isTest;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -20,12 +23,32 @@ class CustomButton extends StatelessWidget {
         height: height,
         width: 354.w,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(9).r, color: Themes.blue),
-        child: Center(
-            child: Text(
-          text!,
-          style: Theme.of(context).textTheme.headlineSmall,
-        )),
+            borderRadius: BorderRadius.circular(borderRaduis).r,
+            color: Themes.blue),
+        child: isTest
+            ? Padding(
+                padding: EdgeInsets.only(right: 45.6.w, left: 150.w),
+                child: Row(
+                  children: [
+                    Center(
+                      child: Text(
+                        text!,
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                    ),
+                    const Spacer(),
+                    const Icon(
+                      Icons.arrow_forward_ios,
+                      color: Themes.white,
+                    )
+                  ],
+                ),
+              )
+            : Center(
+                child: Text(
+                text!,
+                style: Theme.of(context).textTheme.headlineSmall,
+              )),
       ),
     );
   }

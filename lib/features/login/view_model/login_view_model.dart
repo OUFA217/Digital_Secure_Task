@@ -5,7 +5,6 @@ import 'package:digital_secure_task/features/login/view_model/login_view_model_s
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginViewModel extends Cubit<InitialLoginViewModelState> {
   LoginViewModel() : super(SuperLoginViewModelState());
@@ -89,9 +88,6 @@ class LoginViewModel extends Cubit<InitialLoginViewModelState> {
           }
         }
 
-        SharedPreferences sharedPrefrences =
-            await SharedPreferences.getInstance();
-        sharedPrefrences.setString('userName', loginModel.userName!);
         log('User logged in successfully: ${user.result}');
       } else {
         loginModel.userName = loginModel.emailAddress;
@@ -107,9 +103,7 @@ class LoginViewModel extends Cubit<InitialLoginViewModelState> {
             throw Exception("Invalid username/password.");
           }
         }
-        SharedPreferences sharedPrefrences =
-            await SharedPreferences.getInstance();
-        sharedPrefrences.setString('userName', loginModel.userName!);
+
         log('User logged in successfully: ${user.result}');
       }
     } on ParseException catch (e) {
