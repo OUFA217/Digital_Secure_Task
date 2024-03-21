@@ -5,6 +5,7 @@ import 'package:digital_secure_task/features/login/view/pages/login_view.dart';
 import 'package:digital_secure_task/features/login/view_model/login_view_model.dart';
 import 'package:digital_secure_task/features/main/view_model/main_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
@@ -12,6 +13,8 @@ import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   initializeDependencyInjection();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+      statusBarColor: Color.fromRGBO(251, 176, 59, 1)));
   Future.wait([
     Parse().initialize(ApiEndPoints.appId, ApiEndPoints.baseUrl, debug: true),
     ScreenUtil.ensureScreenSize(),

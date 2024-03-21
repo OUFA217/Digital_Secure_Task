@@ -10,6 +10,7 @@ import 'package:digital_secure_task/features/login/view_model/login_view_model.d
 import 'package:digital_secure_task/features/login/view_model/login_view_model_state.dart';
 import 'package:digital_secure_task/features/main/view/pages/main_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -24,6 +25,14 @@ class LoginView extends StatelessWidget {
       final loginViewModel = LoginViewModel.get(context);
 
       return Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(0),
+          child: AppBar(
+            backgroundColor: Colors.transparent,
+            systemOverlayStyle: const SystemUiOverlayStyle(
+                statusBarColor: Color.fromRGBO(242, 242, 242, 1)),
+          ),
+        ),
         backgroundColor: const Color.fromRGBO(242, 242, 242, 1.0),
         body: ModalProgressHUD(
           inAsyncCall: loginViewModel.isLoading,
@@ -43,7 +52,7 @@ class LoginView extends StatelessWidget {
                   ),
                 ),
                 Positioned(
-                    top: 379.h,
+                    top: 317.h,
                     child: Padding(
                       padding: EdgeInsets.only(left: 37.w, right: 37.w),
                       child: Column(
@@ -75,7 +84,10 @@ class LoginView extends StatelessWidget {
                                     )),
                                   ),
                                 )
-                              : Container(),
+                              : SizedBox(
+                                  width: 231.w,
+                                  height: 40.h,
+                                ),
                           SizedBox(
                             height: 13.h,
                           ),

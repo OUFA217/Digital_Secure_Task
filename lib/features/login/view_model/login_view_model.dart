@@ -1,10 +1,13 @@
 import 'dart:developer';
 
 import 'package:digital_secure_task/features/login/model/login_model.dart';
+import 'package:digital_secure_task/features/login/model/users_model.dart';
 import 'package:digital_secure_task/features/login/view_model/login_view_model_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/logger.dart';
 import 'package:parse_server_sdk_flutter/parse_server_sdk_flutter.dart';
+import 'package:sqflite/sqflite.dart';
 
 class LoginViewModel extends Cubit<InitialLoginViewModelState> {
   LoginViewModel() : super(SuperLoginViewModelState());
@@ -15,6 +18,7 @@ class LoginViewModel extends Cubit<InitialLoginViewModelState> {
   bool isCredentialWrong = false;
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  Database? database;
 
   Future<void> signUp(LoginModel loginModel) async {
     isLoading = true;
@@ -70,8 +74,74 @@ class LoginViewModel extends Cubit<InitialLoginViewModelState> {
     }
   }
 
+  Future<void> insertUserstoDatabase(UsersModel usersModel) async {
+    await database!.transaction((txn) async {
+      try {
+        Future.wait([
+          txn.rawInsert(
+              'INSERT INTO Users(UserName, Type, WalletAmount,WalletLastTransactionDate,LastActivityAmount,LastActivityDate) VALUES("khaled", "Master", "920" , "11/3" ,"245","20/3")'),
+          txn.rawInsert(
+              'INSERT INTO Users(UserName, Type, WalletAmount,WalletLastTransactionDate,LastActivityAmount,LastActivityDate) VALUES("Abdelrahman", "Slave", "185" , "19/3" ,"240","21/3")'),
+          txn.rawInsert(
+              'INSERT INTO Users(UserName, Type, WalletAmount,WalletLastTransactionDate,LastActivityAmount,LastActivityDate) VALUES("Saif", "Slave", "620" , "19/5" ,"320","21/1")'),
+          txn.rawInsert(
+              'INSERT INTO Users(UserName, Type, WalletAmount,WalletLastTransactionDate,LastActivityAmount,LastActivityDate) VALUES("Karim", "Slave", "120" , "19/3" ,"950","21/8")')
+        ]).then((value) async {
+          log("Inserted");
+          await _getUsersFromDatabase(usersModel);
+          emit(InsertUsersState());
+        });
+      } catch (e) {
+        log(e.toString());
+      }
+    });
+  }
+
+  Future<void> _getUsersFromDatabase(UsersModel usersModel) async {
+    await database!.rawQuery('SELECT * FROM Users').then((value) {
+      for (var element in value) {
+        usersModel.userName!.add(element['UserName'].toString());
+        usersModel.type!.add(element['Type'].toString());
+        usersModel.walletAmount!.add(element['WalletAmount'].toString());
+        usersModel.walletLastTransactionDate!
+            .add(element['WalletLastTransactionDate'].toString());
+        usersModel.lastActivityAmount!
+            .add(element['LastActivityAmount'].toString());
+        usersModel.lastActivityDate!
+            .add(element['LastActivityDate'].toString());
+      }
+    }).then((value) {
+      emit(GetUsersState());
+    });
+  }
+
+  UsersModel usersModel = UsersModel(
+      userName: [],
+      type: [],
+      walletAmount: [],
+      walletLastTransactionDate: [],
+      lastActivityAmount: [],
+      lastActivityDate: []);
   Future<void> _signIn(LoginModel loginModel) async {
     try {
+      await openDatabase(
+        'Users.db',
+        version: 1,
+        onCreate: (db, version) async {
+          await db.execute(
+              'CREATE TABLE Users(id INTEGER PRIMARY KEY, UserName TEXT, Type TEXT, WalletAmount TEXT, WalletLastTransactionDate TEXT, LastActivityAmount TEXT, LastActivityDate TEXT)');
+          emit(DatabaseInitializedState());
+        },
+        onOpen: (db) {
+          Logger().e("Gat");
+          emit(DatabaseOpenedState());
+        },
+      ).then((value) {
+        database = value;
+        emit(DatabaseOpenedState());
+        insertUserstoDatabase(usersModel);
+        log("Initialized");
+      });
       if (loginModel.emailAddress.contains('@')) {
         final indexOfAt = loginModel.emailAddress.indexOf('@');
         final userName = emailController.text.substring(0, indexOfAt);

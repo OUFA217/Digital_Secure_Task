@@ -4,6 +4,7 @@ import 'package:digital_secure_task/core/utils/image_constants.dart';
 import 'package:digital_secure_task/core/utils/string_constants.dart';
 import 'package:digital_secure_task/features/login/model/login_model.dart';
 import 'package:digital_secure_task/features/login/view/widgets/custom_button.dart';
+import 'package:digital_secure_task/features/login/view_model/login_view_model.dart';
 import 'package:digital_secure_task/features/main/view/widgets/custom_master_information.dart';
 import 'package:digital_secure_task/features/main/view_model/main_view_model.dart';
 import 'package:digital_secure_task/features/main/view_model/main_view_model_state.dart';
@@ -24,18 +25,17 @@ class MainView extends StatelessWidget {
     String greeting = mainViewModel.getGreeting();
     return BlocBuilder<MainViewModel, InitialMainViewModelState>(
         builder: (context, state) {
-      // MainViewModel mainViewModel = MainViewModel.get(context);
-
+      Logger().e(LoginViewModel.get(context).usersModel.userName);
       return Scaffold(
         backgroundColor: const Color.fromRGBO(242, 242, 242, 1.0),
         body: FutureBuilder(
-          future: ParseUser.all().asStream().last,
+          future: ParseUser.currentUser().asStream().first,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
             if (snapshot.hasData) {
-              Logger().f(snapshot.data!.results.toString());
+              final user = snapshot.data as ParseUser;
               return Stack(
                 children: [
                   Padding(
@@ -98,26 +98,41 @@ class MainView extends StatelessWidget {
                           height: 54.h,
                         ),
                         Row(children: [
-                          const CustomMasterInformation(
-                            color: Color.fromRGBO(78, 78, 78, 1),
-                            title: StringConstants.yourWallet,
-                            price: StringConstants.nintyTwoHundred,
-                            description: StringConstants.lastUpdate,
-                            image: IconAssets.wallet,
-                            widthOfImage: 34.63,
-                            heightOfImage: 34.44,
-                          ),
+                          CustomUserInformation(
+                              color: const Color.fromRGBO(78, 78, 78, 1),
+                              title: StringConstants.yourWallet,
+                              price: double.parse(LoginViewModel.get(context)
+                                      .usersModel
+                                      .walletAmount!
+                                      .first)
+                                  .toString(),
+                              description: StringConstants.lastUpdate,
+                              image: IconAssets.wallet,
+                              widthOfImage: 34.63,
+                              heightOfImage: 34.44,
+                              dateOfUpdate: LoginViewModel.get(context)
+                                  .usersModel
+                                  .walletLastTransactionDate!
+                                  .first),
                           SizedBox(
                             width: 10.w,
                           ),
-                          const CustomMasterInformation(
-                            color: Color.fromRGBO(162, 162, 162, 1),
+                          CustomUserInformation(
+                            color: const Color.fromRGBO(162, 162, 162, 1),
                             title: StringConstants.lastActivity,
-                            price: StringConstants.twoHundredAndFourtyFive,
+                            price: double.parse(LoginViewModel.get(context)
+                                    .usersModel
+                                    .lastActivityAmount!
+                                    .first)
+                                .toString(),
                             description: StringConstants.transactionOn,
                             image: IconAssets.activity,
                             widthOfImage: 40.63,
                             heightOfImage: 34.44,
+                            dateOfTransaction: LoginViewModel.get(context)
+                                .usersModel
+                                .lastActivityDate!
+                                .first,
                           )
                         ]),
                         SizedBox(
@@ -141,348 +156,183 @@ class MainView extends StatelessWidget {
                                   letterSpacing: 0),
                         ),
                         SizedBox(height: 26.h),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: [
-                              Stack(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 32.0.h),
-                                    child: Container(
-                                      height: 172.h,
-                                      width: 134.w,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(13.r),
-                                          color: Themes.white),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            height: 91.h,
-                                            width: 134.w,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                    topRight:
-                                                        Radius.circular(13.r),
-                                                    topLeft:
-                                                        Radius.circular(13.r)),
-                                                color: const Color.fromRGBO(
-                                                    251, 176, 59, 1)),
-                                            child: Padding(
-                                              padding:
-                                                  EdgeInsets.only(top: 35.0.h),
-                                              child: Column(
-                                                children: [
-                                                  Center(
-                                                    child: Text(
-                                                      "User 1",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headlineLarge!
-                                                          .copyWith(
-                                                              fontSize: 16.sp,
-                                                              letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                  Center(
-                                                    child: Text(
-                                                      "Total Spending",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headlineMedium!
-                                                          .copyWith(
-                                                              fontSize: 12.sp),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 7.h),
-                                          Padding(
-                                            padding:
-                                                EdgeInsets.only(left: 23.0.w),
-                                            child: Row(
-                                              children: [
-                                                RotatedBox(
-                                                  quarterTurns: 3,
-                                                  child: Text(
-                                                    StringConstants.egp,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headlineLarge!
-                                                        .copyWith(
-                                                            fontSize: 11.sp,
-                                                            letterSpacing: 0,
-                                                            color:
-                                                                Colors.black),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "185.0",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headlineLarge!
-                                                      .copyWith(
-                                                          fontSize: 32.sp,
-                                                          letterSpacing: 0,
-                                                          color: Colors.black),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Text(
-                                            StringConstants.lastSpend,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineMedium!
-                                                .copyWith(
-                                                    fontSize: 10.sp,
-                                                    color: Colors.black),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                      left: 37.w,
-                                      child: Image.asset(
-                                        height: 58.h,
-                                        width: 58.h,
-                                        ImageAssets.profilePic,
-                                      ))
-                                ],
-                              ),
-                              SizedBox(
-                                width: 14.w,
-                              ),
-                              Stack(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 32.0.h),
-                                    child: Container(
-                                      height: 172.h,
-                                      width: 134.w,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(13.r),
-                                          color: Themes.white),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            height: 91.h,
-                                            width: 134.w,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                    topRight:
-                                                        Radius.circular(13.r),
-                                                    topLeft:
-                                                        Radius.circular(13.r)),
-                                                color: const Color.fromRGBO(
-                                                    216, 95, 95, 1)),
-                                            child: Padding(
-                                              padding:
-                                                  EdgeInsets.only(top: 35.0.h),
-                                              child: Column(
-                                                children: [
-                                                  Center(
-                                                    child: Text(
-                                                      "User 2",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headlineLarge!
-                                                          .copyWith(
-                                                              fontSize: 16.sp,
-                                                              letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                  Center(
-                                                    child: Text(
-                                                      "Total Spending",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headlineMedium!
-                                                          .copyWith(
-                                                              fontSize: 12.sp),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 7.h),
-                                          Padding(
-                                            padding:
-                                                EdgeInsets.only(left: 23.0.w),
-                                            child: Row(
-                                              children: [
-                                                RotatedBox(
-                                                  quarterTurns: 3,
-                                                  child: Text(
-                                                    StringConstants.egp,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headlineLarge!
-                                                        .copyWith(
-                                                            fontSize: 11.sp,
-                                                            letterSpacing: 0,
-                                                            color:
-                                                                Colors.black),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "185.0",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headlineLarge!
-                                                      .copyWith(
-                                                          fontSize: 32.sp,
-                                                          letterSpacing: 0,
-                                                          color: Colors.black),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Text(
-                                            StringConstants.lastSpend,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineMedium!
-                                                .copyWith(
-                                                    fontSize: 10.sp,
-                                                    color: Colors.black),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                      left: 37.w,
-                                      child: Image.asset(
-                                        height: 58.h,
-                                        width: 58.h,
-                                        ImageAssets.profilePic,
-                                      ))
-                                ],
-                              ),
-                              SizedBox(
-                                width: 14.w,
-                              ),
-                              Stack(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 32.0.h),
-                                    child: Container(
-                                      height: 172.h,
-                                      width: 134.w,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(13.r),
-                                          color: Themes.white),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            height: 91.h,
-                                            width: 134.w,
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                    topRight:
-                                                        Radius.circular(13.r),
-                                                    topLeft:
-                                                        Radius.circular(13.r)),
-                                                color: const Color.fromRGBO(
-                                                    157, 59, 251, 1)),
-                                            child: Padding(
-                                              padding:
-                                                  EdgeInsets.only(top: 35.0.h),
-                                              child: Column(
-                                                children: [
-                                                  Center(
-                                                    child: Text(
-                                                      "User 3",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headlineLarge!
-                                                          .copyWith(
-                                                              fontSize: 16.sp,
-                                                              letterSpacing: 0),
-                                                    ),
-                                                  ),
-                                                  Center(
-                                                    child: Text(
-                                                      "Total Spending",
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .headlineMedium!
-                                                          .copyWith(
-                                                              fontSize: 12.sp),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(height: 7.h),
-                                          Padding(
-                                            padding:
-                                                EdgeInsets.only(left: 23.0.w),
-                                            child: Row(
-                                              children: [
-                                                RotatedBox(
-                                                  quarterTurns: 3,
-                                                  child: Text(
-                                                    StringConstants.egp,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headlineLarge!
-                                                        .copyWith(
-                                                            fontSize: 11.sp,
-                                                            letterSpacing: 0,
-                                                            color:
-                                                                Colors.black),
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "185.0",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .headlineLarge!
-                                                      .copyWith(
-                                                          fontSize: 32.sp,
-                                                          letterSpacing: 0,
-                                                          color: Colors.black),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Text(
-                                            StringConstants.lastSpend,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headlineMedium!
-                                                .copyWith(
-                                                    fontSize: 10.sp,
-                                                    color: Colors.black),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                      left: 37.w,
-                                      child: Image.asset(
-                                        height: 58.h,
-                                        width: 58.h,
-                                        ImageAssets.profilePic,
-                                      ))
-                                ],
-                              ),
-                            ],
-                          ),
-                        )
                       ],
                     ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 32.0),
+                    child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: loginModel.userName!.length,
+                        shrinkWrap: true,
+                        separatorBuilder: (context, index) {
+                          return SizedBox(
+                            width: 14.w,
+                          );
+                        },
+                        itemBuilder: (context, index) {
+                          int indexCurrentUser = index + 1;
+                          int colorIndex = indexCurrentUser %
+                              MainViewModel.get(context)
+                                  .usersContainerColors
+                                  .length;
+                          if (LoginViewModel.get(context)
+                                  .usersModel
+                                  .userName!
+                                  .elementAt(indexCurrentUser) ==
+                              user.username) {
+                            indexCurrentUser = indexCurrentUser + 1;
+                            colorIndex = indexCurrentUser %
+                                MainViewModel.get(context)
+                                    .usersContainerColors
+                                    .length;
+                          }
+
+                          return Padding(
+                            padding: EdgeInsets.only(top: 686.0.h),
+                            child: Stack(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    top: 32.0.h,
+                                  ),
+                                  child: Container(
+                                    height: 172.h,
+                                    width: 134.w,
+                                    decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(13.r),
+                                        color: Themes.white),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          height: 91.h,
+                                          width: 134.w,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.only(
+                                                  topRight:
+                                                      Radius.circular(13.r),
+                                                  topLeft:
+                                                      Radius.circular(13.r)),
+                                              color: MainViewModel.get(context)
+                                                      .usersContainerColors[
+                                                  colorIndex]),
+                                          child: Padding(
+                                            padding:
+                                                EdgeInsets.only(top: 35.0.h),
+                                            child: Column(
+                                              children: [
+                                                Center(
+                                                  child: Text(
+                                                    LoginViewModel.get(context)
+                                                        .usersModel
+                                                        .userName!
+                                                        .elementAt(
+                                                            indexCurrentUser),
+                                                    // usersModel!.userName!.first,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headlineLarge!
+                                                        .copyWith(
+                                                            fontSize: 16.sp,
+                                                            letterSpacing: 0),
+                                                  ),
+                                                ),
+                                                Center(
+                                                  child: Text(
+                                                    "Total Spending",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .headlineMedium!
+                                                        .copyWith(
+                                                            fontSize: 12.sp),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(height: 7.h),
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.only(left: 23.0.w),
+                                          child: Row(
+                                            children: [
+                                              RotatedBox(
+                                                quarterTurns: 3,
+                                                child: Text(
+                                                  StringConstants.egp,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headlineLarge!
+                                                      .copyWith(
+                                                          fontSize: 11.sp,
+                                                          letterSpacing: 0,
+                                                          color: Colors.black),
+                                                ),
+                                              ),
+                                              Text(
+                                                double.parse(LoginViewModel.get(
+                                                            context)
+                                                        .usersModel
+                                                        .lastActivityAmount!
+                                                        .elementAt(
+                                                            indexCurrentUser))
+                                                    .toString(),
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headlineLarge!
+                                                    .copyWith(
+                                                        fontSize: 32.sp,
+                                                        letterSpacing: 0,
+                                                        color: Colors.black),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              StringConstants.lastSpend,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headlineMedium!
+                                                  .copyWith(
+                                                      fontSize: 10.sp,
+                                                      color: Colors.black),
+                                            ),
+                                            Text(
+                                              LoginViewModel.get(context)
+                                                  .usersModel
+                                                  .lastActivityDate!
+                                                  .elementAt(indexCurrentUser)
+                                                  .toString(),
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .headlineMedium!
+                                                  .copyWith(
+                                                      fontSize: 10.sp,
+                                                      color: Colors.black),
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                    left: 37.w,
+                                    child: Image.asset(
+                                      height: 58.h,
+                                      width: 58.h,
+                                      ImageAssets.profilePic,
+                                    ))
+                              ],
+                            ),
+                          );
+                        }),
                   )
                 ],
               );

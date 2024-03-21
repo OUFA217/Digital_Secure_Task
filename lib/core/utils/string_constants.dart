@@ -11,9 +11,9 @@ abstract class StringConstants {
   static const String egp = "EGP";
   static const String nintyTwoHundred = "920.0";
   static const String twoHundredAndFourtyFive = "245.0";
-  static const String lastUpdate = "Last Update 24/6";
-  static const String transactionOn = "Transaction On 10/5";
+  static const String lastUpdate = "Last Update ";
+  static const String transactionOn = "Transaction On ";
   static const String totalSpend = "Total Spending";
-  static const String lastSpend = "Last Spend";
+  static const String lastSpend = "Last Spend ";
   static const String wrongCredential = "Credential are incorrect";
 }

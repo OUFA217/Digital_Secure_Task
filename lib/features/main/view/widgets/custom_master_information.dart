@@ -4,17 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
-class CustomMasterInformation extends StatelessWidget {
-  const CustomMasterInformation({
-    super.key,
-    required this.title,
-    required this.price,
-    required this.color,
-    required this.description,
-    required this.image,
-    required this.widthOfImage,
-    required this.heightOfImage,
-  });
+class CustomUserInformation extends StatelessWidget {
+  CustomUserInformation(
+      {super.key,
+      required this.title,
+      required this.price,
+      required this.color,
+      required this.description,
+      required this.image,
+      required this.widthOfImage,
+      required this.heightOfImage,
+      this.dateOfTransaction,
+      this.dateOfUpdate});
   final String title;
   final String price;
   final Color color;
@@ -22,6 +23,8 @@ class CustomMasterInformation extends StatelessWidget {
   final String image;
   final double widthOfImage;
   final double heightOfImage;
+  String? dateOfTransaction;
+  String? dateOfUpdate;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -76,11 +79,25 @@ class CustomMasterInformation extends StatelessWidget {
               ],
             ),
           ),
-          Text(
-            description,
-            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                fontSize: 10.sp, color: const Color.fromRGBO(116, 116, 116, 1)),
-          )
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                description,
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                    fontSize: 10.sp,
+                    color: const Color.fromRGBO(116, 116, 116, 1)),
+              ),
+              Text(
+                description == StringConstants.lastUpdate
+                    ? dateOfUpdate!
+                    : dateOfTransaction!,
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                    fontSize: 10.sp,
+                    color: const Color.fromRGBO(116, 116, 116, 1)),
+              )
+            ],
+          ),
         ],
       ),
     );
