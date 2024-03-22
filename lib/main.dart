@@ -19,7 +19,9 @@ void main() async {
     Parse().initialize(ApiEndPoints.appId, ApiEndPoints.baseUrl, debug: true),
     ScreenUtil.ensureScreenSize(),
   ]);
-  runApp(const MyApp());
+  runApp(
+    const MyApp(),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -32,17 +34,22 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       ensureScreenSize: true,
       builder: (context, child) {
+        final MediaQueryData data = MediaQuery.of(context);
+
         return MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => LoginViewModel()),
             BlocProvider(create: (context) => MainViewModel()),
           ],
-          child: MaterialApp(
-            theme: Themes.lightTheme,
-            themeMode: ThemeMode.light,
-            debugShowCheckedModeBanner: false,
-            title: 'Digital Secure',
-            home: const LoginView(),
+          child: MediaQuery(
+            data: data.copyWith(textScaler: const TextScaler.linear(1.0)),
+            child: MaterialApp(
+              theme: Themes.lightTheme,
+              themeMode: ThemeMode.light,
+              debugShowCheckedModeBanner: false,
+              title: 'Digital Secure',
+              home: const LoginView(),
+            ),
           ),
         );
       },

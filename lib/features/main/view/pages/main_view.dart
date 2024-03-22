@@ -35,7 +35,6 @@ class MainView extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
             if (snapshot.hasData) {
-              final user = snapshot.data as ParseUser;
               return Stack(
                 children: [
                   Padding(
