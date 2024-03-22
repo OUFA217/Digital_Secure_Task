@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:digital_secure_task/core/config/themes.dart';
 import 'package:digital_secure_task/core/utils/icon_constants.dart';
 import 'package:digital_secure_task/core/utils/image_constants.dart';
@@ -163,7 +165,13 @@ class MainView extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 32.0),
                     child: ListView.separated(
                         scrollDirection: Axis.horizontal,
-                        itemCount: loginModel.userName!.length,
+                        itemCount: LoginViewModel.get(context)
+                                    .usersModel
+                                    .userName!
+                                    .last !=
+                                user.username
+                            ? loginModel.userName!.length
+                            : loginModel.userName!.length - 1,
                         shrinkWrap: true,
                         separatorBuilder: (context, index) {
                           return SizedBox(
@@ -176,16 +184,25 @@ class MainView extends StatelessWidget {
                               MainViewModel.get(context)
                                   .usersContainerColors
                                   .length;
-                          if (LoginViewModel.get(context)
-                                  .usersModel
-                                  .userName!
-                                  .elementAt(indexCurrentUser) ==
-                              user.username) {
-                            indexCurrentUser = indexCurrentUser + 1;
-                            colorIndex = indexCurrentUser %
-                                MainViewModel.get(context)
-                                    .usersContainerColors
-                                    .length;
+                          try {
+                            if (LoginViewModel.get(context)
+                                        .usersModel
+                                        .userName!
+                                        .elementAt(indexCurrentUser) ==
+                                    user.username &&
+                                LoginViewModel.get(context)
+                                        .usersModel
+                                        .userName!
+                                        .last !=
+                                    user.username) {
+                              indexCurrentUser = indexCurrentUser + 1;
+                              colorIndex = indexCurrentUser %
+                                  MainViewModel.get(context)
+                                      .usersContainerColors
+                                      .length;
+                            }
+                          } catch (e) {
+                            log(e.toString());
                           }
 
                           return Padding(
