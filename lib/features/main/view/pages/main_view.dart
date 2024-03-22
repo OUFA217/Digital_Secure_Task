@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:digital_secure_task/core/config/themes.dart';
 import 'package:digital_secure_task/core/utils/icon_constants.dart';
 import 'package:digital_secure_task/core/utils/image_constants.dart';
@@ -162,16 +160,13 @@ class MainView extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 32.0),
+                    padding: EdgeInsets.only(left: 32.0.w, top: 686.0.h),
                     child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: LoginViewModel.get(context)
-                                    .usersModel
-                                    .userName!
-                                    .last !=
-                                user.username
-                            ? loginModel.userName!.length
-                            : loginModel.userName!.length - 1,
+                            .usersModel
+                            .userName!
+                            .length,
                         shrinkWrap: true,
                         separatorBuilder: (context, index) {
                           return SizedBox(
@@ -179,175 +174,152 @@ class MainView extends StatelessWidget {
                           );
                         },
                         itemBuilder: (context, index) {
-                          int indexCurrentUser = index + 1;
-                          int colorIndex = indexCurrentUser %
+                          int colorIndex = index %
                               MainViewModel.get(context)
                                   .usersContainerColors
                                   .length;
-                          try {
-                            if (LoginViewModel.get(context)
-                                        .usersModel
-                                        .userName!
-                                        .elementAt(indexCurrentUser) ==
-                                    user.username &&
-                                LoginViewModel.get(context)
-                                        .usersModel
-                                        .userName!
-                                        .last !=
-                                    user.username) {
-                              indexCurrentUser = indexCurrentUser + 1;
-                              colorIndex = indexCurrentUser %
-                                  MainViewModel.get(context)
-                                      .usersContainerColors
-                                      .length;
-                            }
-                          } catch (e) {
-                            log(e.toString());
+
+                          if (LoginViewModel.get(context)
+                                  .usersModel
+                                  .type!
+                                  .elementAt(index) !=
+                              "Slave") {
+                            return const SizedBox();
                           }
 
-                          return Padding(
-                            padding: EdgeInsets.only(top: 686.0.h),
-                            child: Stack(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    top: 32.0.h,
-                                  ),
-                                  child: Container(
-                                    height: 172.h,
-                                    width: 134.w,
-                                    decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(13.r),
-                                        color: Themes.white),
-                                    child: Column(
-                                      children: [
-                                        Container(
-                                          height: 91.h,
-                                          width: 134.w,
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.only(
-                                                  topRight:
-                                                      Radius.circular(13.r),
-                                                  topLeft:
-                                                      Radius.circular(13.r)),
-                                              color: MainViewModel.get(context)
-                                                      .usersContainerColors[
-                                                  colorIndex]),
-                                          child: Padding(
-                                            padding:
-                                                EdgeInsets.only(top: 35.0.h),
-                                            child: Column(
-                                              children: [
-                                                Center(
-                                                  child: Text(
-                                                    LoginViewModel.get(context)
-                                                        .usersModel
-                                                        .userName!
-                                                        .elementAt(
-                                                            indexCurrentUser),
-                                                    // usersModel!.userName!.first,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headlineLarge!
-                                                        .copyWith(
-                                                            fontSize: 16.sp,
-                                                            letterSpacing: 0),
-                                                  ),
-                                                ),
-                                                Center(
-                                                  child: Text(
-                                                    "Total Spending",
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .headlineMedium!
-                                                        .copyWith(
-                                                            fontSize: 12.sp),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(height: 7.h),
-                                        Padding(
-                                          padding:
-                                              EdgeInsets.only(left: 23.0.w),
-                                          child: Row(
+                          return Stack(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                  top: 32.0.h,
+                                ),
+                                child: Container(
+                                  height: 172.h,
+                                  width: 134.w,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(13.r),
+                                      color: Themes.white),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                        height: 91.h,
+                                        width: 134.w,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(13.r),
+                                                topLeft: Radius.circular(13.r)),
+                                            color: MainViewModel.get(context)
+                                                    .usersContainerColors[
+                                                colorIndex]),
+                                        child: Padding(
+                                          padding: EdgeInsets.only(top: 35.0.h),
+                                          child: Column(
                                             children: [
-                                              RotatedBox(
-                                                quarterTurns: 3,
+                                              Center(
                                                 child: Text(
-                                                  StringConstants.egp,
+                                                  LoginViewModel.get(context)
+                                                      .usersModel
+                                                      .userName!
+                                                      .elementAt(index),
+                                                  // usersModel!.userName!.first,
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .headlineLarge!
                                                       .copyWith(
-                                                          fontSize: 11.sp,
-                                                          letterSpacing: 0,
-                                                          color: Colors.black),
+                                                          fontSize: 16.sp,
+                                                          letterSpacing: 0),
                                                 ),
                                               ),
-                                              Text(
-                                                double.parse(LoginViewModel.get(
-                                                            context)
-                                                        .usersModel
-                                                        .lastActivityAmount!
-                                                        .elementAt(
-                                                            indexCurrentUser))
-                                                    .toString(),
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headlineLarge!
-                                                    .copyWith(
-                                                        fontSize: 32.sp,
-                                                        letterSpacing: 0,
-                                                        color: Colors.black),
+                                              Center(
+                                                child: Text(
+                                                  "Total Spending",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .headlineMedium!
+                                                      .copyWith(
+                                                          fontSize: 12.sp),
+                                                ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                      ),
+                                      SizedBox(height: 7.h),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 23.0.w),
+                                        child: Row(
                                           children: [
-                                            Text(
-                                              StringConstants.lastSpend,
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .headlineMedium!
-                                                  .copyWith(
-                                                      fontSize: 10.sp,
-                                                      color: Colors.black),
+                                            RotatedBox(
+                                              quarterTurns: 3,
+                                              child: Text(
+                                                StringConstants.egp,
+                                                style: Theme.of(context)
+                                                    .textTheme
+                                                    .headlineLarge!
+                                                    .copyWith(
+                                                        fontSize: 11.sp,
+                                                        letterSpacing: 0,
+                                                        color: Colors.black),
+                                              ),
                                             ),
                                             Text(
-                                              LoginViewModel.get(context)
-                                                  .usersModel
-                                                  .lastActivityDate!
-                                                  .elementAt(indexCurrentUser)
+                                              double.parse(LoginViewModel.get(
+                                                          context)
+                                                      .usersModel
+                                                      .lastActivityAmount!
+                                                      .elementAt(index))
                                                   .toString(),
                                               style: Theme.of(context)
                                                   .textTheme
-                                                  .headlineMedium!
+                                                  .headlineLarge!
                                                   .copyWith(
-                                                      fontSize: 10.sp,
+                                                      fontSize: 32.sp,
+                                                      letterSpacing: 0,
                                                       color: Colors.black),
-                                            )
+                                            ),
                                           ],
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            StringConstants.lastSpend,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineMedium!
+                                                .copyWith(
+                                                    fontSize: 10.sp,
+                                                    color: Colors.black),
+                                          ),
+                                          Text(
+                                            LoginViewModel.get(context)
+                                                .usersModel
+                                                .lastActivityDate!
+                                                .elementAt(index)
+                                                .toString(),
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .headlineMedium!
+                                                .copyWith(
+                                                    fontSize: 10.sp,
+                                                    color: Colors.black),
+                                          )
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                Positioned(
-                                    left: 37.w,
-                                    child: Image.asset(
-                                      height: 58.h,
-                                      width: 58.h,
-                                      ImageAssets.profilePic,
-                                    ))
-                              ],
-                            ),
+                              ),
+                              Positioned(
+                                  left: 37.w,
+                                  child: Image.asset(
+                                    height: 58.h,
+                                    width: 58.h,
+                                    ImageAssets.profilePic,
+                                  ))
+                            ],
                           );
                         }),
                   )
