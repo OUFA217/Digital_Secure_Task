@@ -10,6 +10,7 @@ class MainViewModel extends Cubit<InitialMainViewModelState> {
     const Color.fromRGBO(216, 95, 95, 1),
     const Color.fromRGBO(157, 59, 251, 1),
   ];
+  // Returns a greeting message based on the current time of day.
   String getGreeting() {
     DateTime now = DateTime.now();
     int hour = now.hour;

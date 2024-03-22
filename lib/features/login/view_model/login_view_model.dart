@@ -20,6 +20,7 @@ class LoginViewModel extends Cubit<InitialLoginViewModelState> {
   TextEditingController passwordController = TextEditingController();
   Database? database;
 
+  // Function for signing up a user with the provided login model.
   Future<void> signUp(LoginModel loginModel) async {
     isLoading = true;
     emit(IsLoadingState());
@@ -74,6 +75,7 @@ class LoginViewModel extends Cubit<InitialLoginViewModelState> {
     }
   }
 
+  // A function that inserts users into the database using a transaction. It takes a UsersModel object as a parameter. This function asynchronously inserts multiple user records into the 'Users' table of the database. It then logs a message, retrieves users from the database, and emits an InsertUsersState.
   Future<void> insertUserstoDatabase(UsersModel usersModel) async {
     await database!.transaction((txn) async {
       try {
@@ -97,6 +99,7 @@ class LoginViewModel extends Cubit<InitialLoginViewModelState> {
     });
   }
 
+  // A function that retrieves users from the database and populates the provided UsersModel with the retrieved data.
   Future<void> _getUsersFromDatabase(UsersModel usersModel) async {
     await database!.rawQuery('SELECT * FROM Users').then((value) {
       for (var element in value) {
@@ -122,6 +125,14 @@ class LoginViewModel extends Cubit<InitialLoginViewModelState> {
       walletLastTransactionDate: [],
       lastActivityAmount: [],
       lastActivityDate: []);
+
+  /// Sign in a user with the provided login information.
+  ///
+  /// The [loginModel] parameter contains the user's login information, including
+  /// the email address, password, and user name.
+  ///
+  /// Returns a `Future` that completes when the user has been successfully signed
+  /// in. If there is an error during the sign in process, an exception is thrown.
   Future<void> _signIn(LoginModel loginModel) async {
     try {
       await openDatabase(
@@ -181,6 +192,7 @@ class LoginViewModel extends Cubit<InitialLoginViewModelState> {
     }
   }
 
+  // A function to check credentials and emit the appropriate state.
   void checkCredential() {
     isCredentialWrong = true;
     emit(IsCredentialState());

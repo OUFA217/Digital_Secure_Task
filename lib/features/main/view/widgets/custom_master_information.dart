@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:digital_secure_task/core/config/themes.dart';
 import 'package:digital_secure_task/core/utils/string_constants.dart';
 import 'package:flutter/material.dart';
